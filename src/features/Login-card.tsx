@@ -1,9 +1,12 @@
+"use client";
 import AuthForm from "@/app/components/AuthForm";
-
-type Props = {};
-
-function Login({}: Props) {
-  return <AuthForm />;
+import {Suspense} from "react";
+function Login() {
+  return (
+    <Suspense>
+      <AuthForm />
+    </Suspense>
+  );
 }
 
 export default Login;

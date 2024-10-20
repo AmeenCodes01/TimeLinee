@@ -7,12 +7,14 @@ async function page({params}: {params: {id: string}}) {
   type Event = Tables<"Event">;
   const {id} = params;
   const supabase = createClient();
-  let {data, error} = await supabase
+  const {data, error} = await supabase
     .from("Event")
     .select("*")
     .eq("tID", id)
     .order("date", {ascending: false});
+  if (error) throw Error;
   const events: Event[] = data ?? [];
+
   // console.log(events, "events  ");
   //fetch events
   return (

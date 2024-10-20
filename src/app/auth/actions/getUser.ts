@@ -1,12 +1,11 @@
 "use server";
 
 import {createClient} from "@/utils/supabase/server";
-import {revalidatePath} from "next/cache";
 
 async function getUser(username: string, password: string) {
   try {
     const supabase = createClient();
-    let {data: User, error} = await supabase
+    const {data: User, error} = await supabase
       .from("Users")
       .select("*")
       .eq("username", username)

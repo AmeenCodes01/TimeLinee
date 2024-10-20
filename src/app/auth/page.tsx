@@ -1,4 +1,3 @@
-import SignUp from "@/features/SignUp-card";
 import Login from "@/features/Login-card";
 
 const Auth = () => {
