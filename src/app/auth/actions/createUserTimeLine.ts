@@ -2,7 +2,6 @@
 
 import {createClient} from "@/utils/supabase/server";
 import {revalidatePath} from "next/cache";
-
 async function createUserTimeLine(username: string, password: string) {
   try {
     const supabase = createClient();
@@ -12,10 +11,9 @@ async function createUserTimeLine(username: string, password: string) {
       .select();
 
     if (userError) {
-      if (userError.code === "23505") {
-        throw new Error("Username already exists");
-      }
-      throw userError;
+      throw new Error(
+        userError.message || "An error occurred while creating the user."
+      );
     }
 
     const {data: timeline, error: timelineError} = await supabase
@@ -23,7 +21,12 @@ async function createUserTimeLine(username: string, password: string) {
       .insert([{}])
       .select();
 
-    if (timelineError) throw timelineError;
+    if (timelineError) {
+      throw new Error(
+        timelineError.message ||
+          "An error occurred while creating the timeline."
+      );
+    }
 
     const {data: user_tID, error: updateError} = await supabase
       .from("Users")
@@ -31,16 +34,21 @@ async function createUserTimeLine(username: string, password: string) {
       .eq("id", user[0].id)
       .select();
 
-    if (updateError) throw updateError;
+    if (updateError) {
+      throw new Error(
+        updateError.message || "An error occurred while signing in."
+      );
+    }
 
     // Revalidate the path
     revalidatePath("/create-event");
 
     // Return the user data
     return user_tID[0];
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Error in createUserTimeLine:", error);
-    throw error;
+    // Return the error object with a descriptive message
+    return {error: error.message};
   }
 }
 

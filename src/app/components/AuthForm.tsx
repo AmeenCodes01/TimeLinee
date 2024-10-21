@@ -5,6 +5,7 @@ import {useState} from "react";
 import getUser from "../auth/actions/getUser";
 import {useSearchParams} from "next/navigation";
 import {createQueryString} from "../../utils/createParams";
+import {toast} from "react-toastify";
 
 function AuthForm() {
   const router = useRouter();
@@ -19,23 +20,47 @@ function AuthForm() {
 
     if (username && pass.length > 4) {
       console.log("test");
-
       const data =
         type == "signIn"
           ? await createUserTimeLine(username, pass)
           : await getUser(username, pass);
-      console.log("test");
-      console.log(data, "DATA ");
-      if (data) {
-        localStorage.setItem("authUser", JSON.stringify(data));
-        router.push(
-          params.get("id")
-            ? "/create-event" +
-                "?" +
-                createQueryString("id", params.get("id") as string)
-            : "/create-event"
-        );
+      console.log(data, " da ta");
+      if (data.error) {
+        if (
+          data.error ==
+          'duplicate key value violates unique constraint "Users_username_key"'
+        ) {
+          toast("User already exists. Please login");
+        } else {
+          toast(data.error);
+        }
       }
+
+      // if (data) {
+      //   localStorage.setItem("authUser", JSON.stringify(data));
+      //   router.push(
+      //     params.get("id")
+      //       ? "/create-event" +
+      //           "?" +
+      //           createQueryString("id", params.get("id") as string)
+      //       : "/create-event"
+      //   );
+      // } else if (type == "login" && data == undefined) {
+      //   console.log("toast");
+      //   toast("Username or pass incorrect", {
+      //     position: "top-right",
+      //     autoClose: 5000,
+
+      //     theme: "light",
+      //   });
+      // } else if (type == "signIn" && data == undefined) {
+      //   toast("Username already exists", {
+      //     position: "top-right",
+      //     autoClose: 5000,
+
+      //     theme: "light",
+      //   });
+      // }
     }
   };
   return (
@@ -70,7 +95,7 @@ function AuthForm() {
         <button
           className="bg-green-500 text-white"
           type="submit"
-          onClick={(e) => onSubmit(e, "logIn")}>
+          onClick={(e) => onSubmit(e, "login")}>
           Log in
         </button>
         <button

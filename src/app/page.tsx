@@ -1,5 +1,4 @@
 import Button from "./components/Button";
-import Link from "next/link";
 import ViewInputButton from "./components/ViewInputButton";
 
 export default function Home() {
@@ -10,9 +9,7 @@ export default function Home() {
       </p>
       <div className="flex flex-col mt-6 self-center justify-center gap-2 ">
         <ViewInputButton />
-        <Link href="/create-event" className="flex justify-center">
-          <Button title="Create" />
-        </Link>
+        <Button title="Create" />
       </div>
     </div>
   );

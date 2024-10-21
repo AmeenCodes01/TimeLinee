@@ -3,12 +3,11 @@
 import {useRouter} from "next/navigation";
 import {useParams} from "next/navigation";
 import {createQueryString} from "../../../utils/createParams";
-import {ChildProcessWithoutNullStreams} from "child_process";
 function AddEventButton() {
   const router = useRouter();
 
   const params = useParams<{id: string}>();
-  let user: any | ChildProcessWithoutNullStreams;
+  let user: any | null;
   if (typeof window !== "undefined") {
     user = localStorage.getItem("authUser");
     console.log(localStorage.getItem("authUser"), "user");
